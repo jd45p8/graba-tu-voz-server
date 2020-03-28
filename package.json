@@ -1,0 +1,23 @@
+{
+  "name": "graba-tu-voz-server",
+  "version": "1.0.0",
+  "description": "Es el servidor para la aplicación graba tu voz.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jd45p8/graba-tu-voz-server.git"
+  },
+  "author": "José Polo <polodj@uninorte.edu.co>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/jd45p8/graba-tu-voz-server/issues"
+  },
+  "homepage": "https://github.com/jd45p8/graba-tu-voz-server#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
