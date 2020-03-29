@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const userRouter = require('./src/routes/user');
 
 const port = process.env.PORT || 8080;
-const dbDir = `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}`;
+const dbDir = `${process.env.DB_PREFIX}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}`;
 
 const app = express();
 
@@ -25,6 +25,6 @@ mongoose.connect(dbDir, {
 
 app.use(userRouter);
 
-app.listen(8080, () => {
+app.listen(port, () => {
   console.log(`Corriendo en puerto ${port}`);
 });
