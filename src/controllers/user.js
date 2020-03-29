@@ -1,26 +1,54 @@
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
 /**
  * Método para creación de usuario.
  */
-exports.create = function (req, res) {
+exports.create = async function (req, res) {
   var user = new User();
+  if (req.body.password.length < 8) {
+    res.json({
+      "errors": {
+        "password": {
+          "kind": "minlength",
+          "path": "password"
+        }
+      },
+      "_message": "user validation failed",
+      "name": "ValidationError"
+    })
+    return;
+  }
+
   user.email = req.body.email;
   user.password = req.body.password;
   user.contact = req.body.contact;
   user.country = req.body.country;
   user.state = req.body.state;
   user.province = req.body.province;
-  user.validate(() => {
-    user.save(err => {
-      if (err) {
-        res.json(err);
-      } else {
-        res.json({
-          message: 'Usuario creado',
-          email: user.email
-        });
-      }
-    });
-  })
+
+  if (process.env.BCRYPT_SALT_ROUNDS) {
+    try {
+      var hash = await bcrypt.hash(user.password, parseInt(process.env.BCRYPT_SALT_ROUNDS))
+    } catch (error) {
+      res.status(500).send();
+      console.log(hashError);
+    }
+
+    user.password = hash;
+
+    try {
+      await user.save();
+      res.json({
+        message: 'Usuario creado',
+        email: user.email
+      });
+    } catch (error) {
+      res.json(error);
+      console.log(error)
+    }
+  } else {
+    console.log("No se ha configurado BCRYPT_SALT_ROUNDS");
+    res.status(500).send();
+  }
 }

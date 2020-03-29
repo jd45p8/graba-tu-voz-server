@@ -13,7 +13,7 @@ var userSchema = new Schema({
       }
     }
   },
-  password: { type: String, required: true, minlength: 8 },
+  password: { type: String, required: true },
   contact: { type: Boolean, required: true },
   country: {
     type: String, required: function () {
