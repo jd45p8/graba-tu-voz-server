@@ -11,7 +11,8 @@ DB_PREFIX=`<prefijo>`\
 DB_HOST=`<dirección o IP del host de la base de datos>`\
 DB_USER=`<usuario para conectarse a la base de datos>`\
 DB_PASSWORD=`<contraseña para conectarse a la base de datos>`\
-DB_NAME=`<Nombre d ela base de datos>`
+DB_NAME=`<nombre de la base de datos>`
+BCRYPT_SALT_ROUNDS=`<número de rondas para bcrypt>`
 
 # Producción
 `npm start`

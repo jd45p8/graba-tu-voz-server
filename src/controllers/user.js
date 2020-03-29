@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 exports.create = async function (req, res) {
   var user = new User();
   if (req.body.password.length < 8) {
-    res.json({
+    return res.json({
       "errors": {
         "password": {
           "kind": "minlength",
@@ -17,7 +17,11 @@ exports.create = async function (req, res) {
       "_message": "user validation failed",
       "name": "ValidationError"
     })
-    return;
+  }
+
+  if (!process.env.BCRYPT_SALT_ROUNDS) {
+    console.log("No se ha configurado BCRYPT_SALT_ROUNDS");
+    res.status(500).send();
   }
 
   user.email = req.body.email;
@@ -27,28 +31,20 @@ exports.create = async function (req, res) {
   user.state = req.body.state;
   user.province = req.body.province;
 
-  if (process.env.BCRYPT_SALT_ROUNDS) {
-    try {
-      var hash = await bcrypt.hash(user.password, parseInt(process.env.BCRYPT_SALT_ROUNDS))
-    } catch (error) {
-      res.status(500).send();
-      console.log(hashError);
-    }
-
-    user.password = hash;
-
-    try {
-      await user.save();
-      res.json({
-        message: 'Usuario creado',
-        email: user.email
-      });
-    } catch (error) {
-      res.json(error);
-      console.log(error)
-    }
-  } else {
-    console.log("No se ha configurado BCRYPT_SALT_ROUNDS");
+  try {
+    var hash = await bcrypt.hash(user.password, parseInt(process.env.BCRYPT_SALT_ROUNDS))
+  } catch (error) {
     res.status(500).send();
+    console.log(error);
+  }
+
+  try {
+    await user.save();
+    res.json({
+      message: 'Usuario creado',
+      email: user.email
+    });
+  } catch (error) {
+    res.json(error);
   }
 }
