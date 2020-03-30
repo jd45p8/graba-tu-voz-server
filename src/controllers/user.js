@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
  */
 exports.create = async function (req, res) {
   var user = new User();
-  if (req.body.password.length < 8) {
+  if (!req.body.password || req.body.password.length < 8) {
     return res.json({
       "errors": {
         "password": {
@@ -37,6 +37,8 @@ exports.create = async function (req, res) {
     res.status(500).send();
     console.log(error);
   }
+
+  user.password = hash;
 
   try {
     await user.save();
