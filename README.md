@@ -30,7 +30,7 @@ Crear un archivo llamado *.env* en la raíz del proyecto con el siguiente conten
 *state*: estado donde se encuentra el usuario\
 *province*: provincia donde se encuentra el usuario
 #### Respuesta
-Mensaje de éxito.
+Mensaje de éxito en la creación (201).
 
 ## /login
 ### POST (Inicio de sesión)
@@ -38,11 +38,19 @@ Mensaje de éxito.
 *email*: email del usuario\
 *password*: contraseña del usuario
 #### Respuesta
-Token de autenticación del usuario.
+Token de autenticación del usuario (200).
+
+## /logout
+### POST (Cierra sesión)
+Requiere enviar el Token en la cabecera.
+#### Respuesta
+Mensaje de éxito (200).
 
 # Códigos de respuesta de la API
 200 - Todo salió bien.\
-401 - Credenciales de autenticación inválidas.\
+201 - Se crearon uno o más recursos en respuesta a la petición.\
+401 - No está autorizado para realizar esta petición.\
+403 - Credenciales de autenticación inválidas.\
 422 - El servidor entendió la petición, pero la información enviada no es correcta para el contexto dado.\
 500 - Errores de la API no permiten dar respuesta a la petición.\
 404 - Recurso solicitado no ha sido encontrado.

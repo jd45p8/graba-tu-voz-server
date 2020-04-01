@@ -5,18 +5,11 @@ const User = require('../models/user');
  * Método para creación de usuario.
  */
 exports.create = async function (req, res) {
-  const user = new User();
-
-  user.email = req.body.email;
-  user.password = req.body.password;
-  user.contact = req.body.contact;
-  user.country = req.body.country;
-  user.state = req.body.state;
-  user.province = req.body.province;
+  const user = new User(req.body);
 
   try {
     await user.save();
-    res.json({
+    res.status(201).json({
       message: 'Usuario creado',
       email: user.email
     });
@@ -48,14 +41,44 @@ exports.login = async function (req, res) {
     user = await User.findByCredentials(req.body.email, req.body.password);
   } catch (error) {
     console.log(error);
-    res.status(401).json({ message: 'Credenciales inválidas.' });
+    res.status(403).json({ message: 'Credenciales inválidas.' });
   }
 
   try {
     const token = await user.generateAuthToken();
-    res.json({ token })
+    res.status(200).json({ token })
   } catch (error) {
     console.log(error);
-    res.status(500).send({ message: 'Algo ha salido mal.' });
+    res.status(500).json({ message: 'Algo ha salido mal.' });
+  }
+}
+
+/**
+ * Método para cerrar sesión de un usuario autenticado, eliminando un token.
+ */
+exports.logout = async function (req, res) {
+  const { user, token } = req;
+  user.tokens = user.tokens.filter(t => t.token != token);
+  try {
+    await user.save();
+    res.status(200).json({ message: 'Se ha cerrado la sesión.' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Algo ha salido mal.' });
+  }
+}
+
+/**
+ * Método para borrar todos los tokens asignados a un usuario.
+ */
+exports.logoutall = async function (req, res) {
+  const { user, token } = req;
+  user.tokens = [];
+  try {
+    await user.save();
+    res.status(200).json({ message: 'Se han cerrado todas las sesiones.' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Algo ha salido mal.' });
   }
 }

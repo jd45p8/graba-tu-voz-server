@@ -59,7 +59,7 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.generateAuthToken = async function () {
   if (process.env.JWT_KEY != undefined) {
     const user = this;
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY);
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY, {algorithm: "HS256"});
     user.tokens = user.tokens.concat({ token });
     await user.save();
     return token;
@@ -69,10 +69,10 @@ userSchema.methods.generateAuthToken = async function () {
 }
 
 /**
- * Método para encontrar un suario usando sus credenciales.
+ * Método para encontrar un usuario usando sus credenciales.
  */
 userSchema.statics.findByCredentials = async function (email, password) {
-  const user = await User.findOne({ 'email': email });
+  const user = await User.findOne({ email: email });
   if (!user) {
     throw new Error('Credenciales inválidas.')
   }
