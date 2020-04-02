@@ -10,7 +10,7 @@ exports.create = async function (req, res) {
   try {
     await user.save();
     res.status(201).json({
-      message: 'Usuario creado',
+      message: 'Usuario creado.',
       email: user.email
     });
   } catch (error) {
@@ -20,13 +20,13 @@ exports.create = async function (req, res) {
       res.status(422).json({
         message: 'El usuario ya se encuentra registrado.'
       });
-    } else if (error.name == 'ValidatorError') {
+    } else if (error.name == 'ValidatorError' || error.name == 'ValidationError') {
       res.status(422).json({
-        message: 'Verifique que la información ingresada.'
+        message: 'Verifique la información ingresada.'
       });
     } else {
       res.status(500).json({
-        message: 'Algo ha salido mal'
+        message: 'Algo ha salido mal.'
       });
     }
   }

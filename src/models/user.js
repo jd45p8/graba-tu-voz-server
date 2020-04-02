@@ -8,7 +8,7 @@ const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@
 /**
  * Esquema del usuario en la base de datos.
  */
-var userSchema = new Schema({
+const userSchema = new Schema({
   email: {
     type: String, unique: true, required: true, validate: {
       validator: function (email) {
@@ -21,17 +21,24 @@ var userSchema = new Schema({
   country: {
     type: String, required: function () {
       return this.contact === true;
-    }
+    },
+    minlength: 1
   },
   state: {
     type: String, required: function () {
       return this.contact === true;
-    }
+    },
+    minlength: 1
   },
   province: {
     type: String, required: function () {
       return this.contact === true;
-    }
+    },
+    minlength: 1
+  },
+  admin: {
+    type: Boolean,
+    default: false
   },
   joinDate: { type: Date, default: Date.now },
   tokens: [{
@@ -43,6 +50,28 @@ var userSchema = new Schema({
 });
 
 /**
+ * Middleware para eliminar los espacios en blanco al principio y al final antes de validar.
+ */
+userSchema.pre('validate', function (next) {
+  const user = this;
+  if (user.isModified('email')) {
+    user.email = user.email.trim();
+  }
+  if (user.contact) {
+    if (user.isModified('country')) {
+      user.country = user.country.trim();
+    }
+    if (user.isModified('state')) {
+      user.state = user.state.trim();
+    }
+    if (user.isModified('province')) {
+      user.province = user.province.trim();
+    }
+  }
+  next();
+});
+
+/**
  * Middleware para cifrar la contraseña antes de almacenarla.
  */
 userSchema.pre('save', async function (next) {
@@ -50,7 +79,6 @@ userSchema.pre('save', async function (next) {
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, parseInt(process.env.BCRYPT_SALT_ROUNDS || 10));
   }
-  next();
 });
 
 /**
@@ -59,7 +87,7 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.generateAuthToken = async function () {
   if (process.env.JWT_KEY != undefined) {
     const user = this;
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY, {algorithm: "HS256"});
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY, { algorithm: "HS256" });
     user.tokens = user.tokens.concat({ token });
     await user.save();
     return token;
