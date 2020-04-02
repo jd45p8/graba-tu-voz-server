@@ -40,6 +40,7 @@ recordingSchema.pre('validate', function (next) {
   if (recording.isModified('text')) {
     recording.text = recording.text.trim()
   }
+  next();
 });
 
 module.exports = mongoose.model('Recording', recordingSchema);

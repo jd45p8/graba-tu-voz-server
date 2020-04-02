@@ -9,11 +9,17 @@ exports.authenticate = async function (req, res, next) {
     return res.status(401).json({ message: 'Debe iniciar sesión para continuar.' });
   }
   const token = req.header('Authorization').replace('Bearer ', '');
+  let user;
 
-  const data = jwt.verify(token, process.env.JWT_KEY);
+  try {
+    const data = jwt.verify(token, process.env.JWT_KEY);
 
-  const user = await User.findOne({ _id: data._id, 'tokens.token': token });
-  if (!user) {
+    user = await User.findOne({ _id: data._id, 'tokens.token': token });
+    if (!user) {
+      throw new Error('Usuario no encontrado.')
+    }
+  } catch (error) {
+    console.log(error);
     return res.status(401).json({ message: 'No está autorizado para realizar esta solicitud.' });
   }
 

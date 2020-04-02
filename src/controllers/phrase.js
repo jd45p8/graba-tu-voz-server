@@ -13,17 +13,11 @@ exports.create = async function (req, res) {
     console.log(error);
 
     if (error.code == 11000) {
-      res.status(422).json({
-        message: 'La frase ya existe.'
-      });
+      res.status(422).json({ message: 'La frase ya existe.' });
     } else if (error.name == 'ValidatorError' || error.name == 'ValidationError') {
-      res.status(422).json({
-        message: 'Verifique la información ingresada.'
-      });
+      res.status(422).json({ message: 'Verifique la información ingresada.' });
     } else {
-      res.status(500).json({
-        message: 'Algo ha salido mal.'
-      });
+      res.status(500).json({ message: 'Algo ha salido mal.' });
     }
   }
 }
@@ -42,9 +36,7 @@ exports.remove = async function (req, res) {
   } catch (error) {
     console.log(error);
 
-    res.status(500).json({
-      message: 'Algo ha salido mal.'
-    });
+    res.status(500).json({ message: 'Algo ha salido mal.' });
   }
 }
 
@@ -58,9 +50,8 @@ exports.list = async function (req, res) {
       return {text: f.text};
     }));
   } catch (error) {
-    res.status(500).json({
-      message: 'Algo ha salido mal.'
-    });
+    console.log(error);
+    
+    res.status(500).json({ message: 'Algo ha salido mal.' });
   }
-
 }

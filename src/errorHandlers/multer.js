@@ -7,7 +7,6 @@ exports.fileSize = function (err, req, res, next) {
     return res.status(422).json({ message: 'El archivo es muy grande.' });
   }
   next(err);
-
 }
 
 /**
