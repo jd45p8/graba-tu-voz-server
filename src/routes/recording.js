@@ -31,6 +31,11 @@ router.route('/recording')
     multerErrorHandler.fileCount,
     multerErrorHandler.mimeType,
     multerErrorHandler.error)
+
+/**
+ * Ruta para eliminar grabaciones
+ */
+router.route('/recording/:_id')
   .delete(userMiddleware.authenticate,
     recordingController.remove);
 

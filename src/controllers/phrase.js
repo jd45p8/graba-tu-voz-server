@@ -27,8 +27,8 @@ exports.create = async function (req, res) {
  */
 exports.remove = async function (req, res) {
   try {
-    const result = await Phrase.deleteOne({ text: req.body.text });
-    if (result.deleteCount > 0) {
+    const result = await Phrase.deleteOne({ _id: req.params._id });
+    if (result.deletedCount > 0) {
       res.status(200).json({ message: 'Frase eliminada.' });
     } else {
       res.status(404).json({ message: 'No se puede eliminar un elemento inexistente.' });
@@ -47,7 +47,9 @@ exports.list = async function (req, res) {
   try {
     const phrases = await Phrase.find({});
     res.status(200).json(phrases.map( f => {
-      return {text: f.text};
+      return {
+        _id: f._id,
+        text: f.text};
     }));
   } catch (error) {
     console.log(error);

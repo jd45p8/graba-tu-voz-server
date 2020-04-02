@@ -11,6 +11,8 @@ router.route('/phrase')
   .post(userMiddleware.authenticate,
     userMiddleware.admin,
     phraseController.create)
+
+router.route('/phrase/:_id')
   .delete(userMiddleware.authenticate,
     userMiddleware.admin,
     phraseController.remove);

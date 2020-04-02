@@ -61,7 +61,7 @@ exports.create = async function (req, res) {
  * Método para la eliminación de grabaciones.
  */
 exports.remove = async function (req, res) {
-  const recording = Recording.findOne({ email: req.user.email, fileID: req.fileID });
+  const recording = await Recording.findOne({ email: req.user.email, _id: req.params._id });
   if (!recording) {
     return res.status(422).json({ message: 'El archivo no existe o no eres su propietario.' });
   }
@@ -73,7 +73,8 @@ exports.remove = async function (req, res) {
       Key: recording.fileID
     }).promise();
     // Eliminar elemento de la base de datos.
-    Recording.deleteOne({ _id: recording._id });
+    await Recording.deleteOne({ _id: recording._id });
+    res.status(200).json({ message: 'La grabación se ha eliminado.' })
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Algo ha salido mal. ' });
@@ -88,8 +89,8 @@ exports.listUserRecordings = async function (req, res) {
     const recordings = await Recording.find({ email: req.user.email });
     res.status(200).json(recordings.map( recording => {
       return {
-        'text': recording.text,
-        "fileID": recording.fileID
+        _id: recording._id,
+        text: recording.text,
       }
     }));
   } catch (error) {

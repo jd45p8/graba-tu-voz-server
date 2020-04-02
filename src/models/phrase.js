@@ -11,7 +11,7 @@ const phraseSchema = new Schema({
     required: true,
     unique: true
   },
-  addedDate: { type: Date, default: Date.now }
+  createdDate: { type: Date, default: Date.now }
 });
 
 /**
