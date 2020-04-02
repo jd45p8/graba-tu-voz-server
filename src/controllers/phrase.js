@@ -8,7 +8,7 @@ exports.create = async function (req, res) {
 
   try {
     await phrase.save()
-    res.status(201).json({message: 'Frase añadida.'})
+    res.status(201).json({ message: 'Frase añadida.' })
   } catch (error) {
     console.log(error);
 
@@ -33,21 +33,34 @@ exports.create = async function (req, res) {
  */
 exports.remove = async function (req, res) {
   try {
-    await phrase.deleteOne({text: req.text});
-    res.status(200).json({message: 'Frase eliminada.'})
+    const result = await Phrase.deleteOne({ text: req.body.text });
+    if (result.deleteCount > 0) {
+      res.status(200).json({ message: 'Frase eliminada.' });
+    } else {
+      res.status(404).json({ message: 'No se puede eliminar un elemento inexistente.' });
+    }
   } catch (error) {
     console.log(error);
 
-    if (error.code == 11000) {
-
-    } else {
-      res.status(500).json({
-        message: 'Algo ha salido mal.'
-      });
-    }
+    res.status(500).json({
+      message: 'Algo ha salido mal.'
+    });
   }
 }
 
 /**
  * Lista todas las frases de la base de datos.
  */
+exports.list = async function (req, res) {
+  try {
+    const phrases = await Phrase.find({});
+    res.status(200).json(phrases.map( f => {
+      return {text: f.text};
+    }));
+  } catch (error) {
+    res.status(500).json({
+      message: 'Algo ha salido mal.'
+    });
+  }
+
+}
