@@ -22,12 +22,16 @@ const upload = multer({
  * Ruta para agregar grabaciones a la base de datos.
  */
 router.route('/recording')
+  .get(userMiddleware.authenticate,
+    recordingController.listUserRecordings)
   .post(userMiddleware.authenticate,
     upload.single("file"),
     recordingController.create,
     multerErrorHandler.fileSize,
     multerErrorHandler.fileCount,
     multerErrorHandler.mimeType,
-    multerErrorHandler.error);
+    multerErrorHandler.error)
+  .delete(userMiddleware.authenticate,
+    recordingController.remove);
 
 module.exports = router;

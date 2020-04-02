@@ -22,7 +22,7 @@ mongoose.connect(dbDir, {
 }).then(() => {
   console.log('Conectado a la base de datos de forma exitosa.');
 }).catch((error) => {
-  console.error(error);
+  console.log(error);
 });
 
 app.use(userRouter);
