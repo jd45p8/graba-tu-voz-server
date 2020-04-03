@@ -33,7 +33,7 @@ exports.create = async function (req, res) {
     // Subir el archivo a S3.
     await s3Bucket.putObject({
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: recording.fileID,
+      Key: `${req.user.email}/${recording.fileID}`,
       Body: req.file.buffer,
       ContentType: req.file.mimetype
     }).promise();
@@ -70,7 +70,7 @@ exports.remove = async function (req, res) {
     // Eliminar elemento de S3.
     await s3Bucket.deleteObject({
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: recording.fileID
+      Key: `${req.user.email}/${recording.fileID}`
     }).promise();
     // Eliminar elemento de la base de datos.
     await Recording.deleteOne({ _id: recording._id });
@@ -82,12 +82,34 @@ exports.remove = async function (req, res) {
 }
 
 /**
+ * Descargar una grabación de un usuario.
+ */
+exports.download = async function (req, res) {
+  const recording = await Recording.findOne({ _id: req.params._id, email: req.user.email });
+  if (!recording) {
+    return res.status(422).json({ message: 'El archivo no existe o no eres su propietario.' });
+  }
+
+  try {
+    const object = await s3Bucket.getObject({
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `${recording.email}/${recording.fileID}`
+    });
+    const fileStream = object.createReadStream();
+    fileStream.pipe(res);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Algo ha salido mal.' })
+  }
+}
+
+/**
  * Listar todas las grabaciones de un usuario.
  */
 exports.listUserRecordings = async function (req, res) {
   try {
     const recordings = await Recording.find({ email: req.user.email });
-    res.status(200).json(recordings.map( recording => {
+    res.status(200).json(recordings.map(recording => {
       return {
         _id: recording._id,
         text: recording.text,
