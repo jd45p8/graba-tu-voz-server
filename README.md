@@ -46,6 +46,63 @@ Requiere enviar el Token en la cabecera.
 #### Respuesta
 Mensaje de éxito (200).
 
+## /logoutall
+### POST (Cierra todas las sesiones de un usuario)
+Requiere enviar el Token en la cabecera.
+#### Respuesta
+Mensaje de éxito (200).
+
+## /phrase
+### POST (Crea una frase)
+Requiere enviar el Token en la cabecera y ser *admin*.
+#### Parámetros obligatorios
+*text*: texto para la frase.
+#### Respuesta
+Mensaje de éxito (201).
+
+## /phrase/all
+### GET (Retorna todas las frases)
+Require en viar el Token en la cabecera.
+#### Respuesta
+Array con las frases (200).
+
+## /phrase/:_id
+### DELETE (Elimina una frase)
+Requiere enviar el Token en la cabecera y ser *admin*.
+#### Prámetros obligatorios
+*_id*: es el identificador de la frase.
+#### Respuesta
+Mensaje de éxito (200).
+
+## /recording
+### POST (Subir una grabación)
+Requiere enviar el Token en la cabecera.
+#### Parámetros obligatorios (form-data)
+*text*: es el texto de la frase a la que corresponde audio.\
+*file*: es el archivo de audio que se desea subir.
+#### Respuesta
+Mensaje de éxito (201).
+
+## /recording/list
+### GET (Lista los las grabaciones de un usuario)
+Requiere enviar el Token en la cabecera.
+#### Respuesta
+Array con la lista de grabaciones del usuario autenticado.
+
+## /recording/:_id
+### GET (Descarga una grabación de un usuario)
+Requiere enviar el Token en la cabecera.
+#### Parámetros obligatorios
+*_id*: es el identificador de la grabación.
+#### Respuesta
+Mensaje de confirmación (200).
+### DELETE (Borra una grabación de un usuario)
+Requiere enviar el Token en la cabecera.
+#### Parámetros obligatorios
+*_id*: es el identificador de la grabación.
+#### Respuesta
+Mesaje de confirmación (200).
+
 # Códigos de respuesta de la API
 200 - Todo salió bien.\
 201 - Se crearon uno o más recursos en respuesta a la petición.\
