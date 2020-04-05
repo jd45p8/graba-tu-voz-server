@@ -87,7 +87,7 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.generateAuthToken = async function () {
   if (process.env.JWT_KEY != undefined) {
     const user = this;
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY, { algorithm: "HS256" });
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY, { algorithm: "HS256", expiresIn: "1d"});
     user.tokens = user.tokens.concat({ token });
     await user.save();
     return token;
