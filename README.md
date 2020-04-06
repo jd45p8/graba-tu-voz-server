@@ -13,7 +13,11 @@ Crear un archivo llamado *.env* en la raíz del proyecto con el siguiente conten
 *DB_PASSWORD*=contraseña para conectarse a la base de datos\
 *DB_NAME*=nombre de la base de datos\
 *BCRYPT_SALT_ROUNDS*=número de rondas para bcrypt\
-*JWT_KEY*=llave para la generación de los tokens
+*JWT_KEY*=llave para la generación de los tokens\
+*AWS_BUCKET_NAME*=nombre del AWS Bucket donde se almacenarán las pistas de audio\
+*AWS_ACCESS_KEY_ID*=id de acceso a AWS\
+*AWS_SECRET_ACCESS_KEY*=llave secreta de acceso a AWS\
+*AWS_REGION*=región de AWS por defecto
 
 # Producción
 `npm start`
