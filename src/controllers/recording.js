@@ -2,6 +2,7 @@ const Recording = require('../models/recording');
 const Phrase = require('../models/phrase');
 const AWS = require('aws-sdk');
 const md5 = require('md5');
+const mmBuffer = require('music-metadata').parseBuffer;
 
 const s3Bucket = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -22,6 +23,9 @@ exports.create = async function (req, res) {
   recording.email = req.user.email;
 
   try {
+    let metadata = await mmBuffer(req.file.buffer, req.file.mimetype);
+    recording.duration = metadata.format.duration;
+
     recording.fileID = `${md5(req.file.buffer)}.wav`;
     const result = await Phrase.findOne({ text: recording.text });
     if (!result) {
@@ -61,6 +65,10 @@ exports.create = async function (req, res) {
  * Método para la eliminación de grabaciones.
  */
 exports.remove = async function (req, res) {
+  if (!req.params._id.match(/^[0-9a-fA-F]{24}$/)) {
+    return res.status(404).json({ message: 'Archivo no encontrado.' });
+  }
+
   const recording = await Recording.findOne({ email: req.user.email, _id: req.params._id });
   if (!recording) {
     return res.status(422).json({ message: 'El archivo no existe o no eres su propietario.' });
@@ -113,6 +121,7 @@ exports.listUserRecordings = async function (req, res) {
       return {
         _id: recording._id,
         text: recording.text,
+        duration: recording.duration
       }
     }));
   } catch (error) {

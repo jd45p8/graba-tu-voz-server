@@ -27,6 +27,10 @@ const recordingSchema = new Schema({
     minlength: 1,
     unique: true
   },
+  duration: {
+    type: Number,
+    required: true
+  }
 });
 
 /**

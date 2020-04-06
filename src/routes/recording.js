@@ -6,14 +6,18 @@ const userMiddleware = require('../middlewares/user');
 
 // Se almacenarán los archivos que se suban en buffers de memoria como objetos.
 const storage = multer.memoryStorage();
-const allowedTypes = ['audio/wave', 'audio/wav'];
+// Solo se permiten archivos Wav.
+const wavMimeTypes = ['audio/wav', 'audio/wave', 'audio/vnd.wave', 'audio/x-wav'];
 const upload = multer({
   storage: storage,
   limits: { fileSize: 2 * 1024 * 1024, files: 1 },
   fileFilter: (req, file, callback) => {
-    if (!allowedTypes.includes(file.mimetype)) {
+    if (!wavMimeTypes.includes(file.mimetype)) {
       callback(new Error('WRONG_MIMETYPE'));
     } else {
+      if (file.mimetype != wavMimeTypes[0]){
+        file.mimetype = wavMimeTypes[0];
+      }
       callback(null, true);
     }
   }
