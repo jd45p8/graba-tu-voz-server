@@ -20,7 +20,7 @@ exports.authenticate = async function (req, res, next) {
     }
   } catch (error) {
     console.log(error);
-    return res.status(401).json({ message: 'No está autorizado para realizar esta solicitud.' });
+    return res.status(401).json({ message: 'Debe iniciar sesión para continuar.' });
   }
 
   req.user = user;
@@ -33,7 +33,7 @@ exports.authenticate = async function (req, res, next) {
  */
 exports.admin = function (req, res, next) {
   if (!req.user.admin) {
-    return res.status(401).json({ message: 'No está autorizado para realizar esta solicitud.' });
+    return res.status(403).json({ message: 'No está autorizado para realizar esta solicitud.' });
   }
 
   next()

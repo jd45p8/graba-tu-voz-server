@@ -41,7 +41,7 @@ exports.login = async function (req, res) {
     user = await User.findByCredentials(req.body.email, req.body.password);
   } catch (error) {
     console.log(error);
-    res.status(403).json({ message: 'Credenciales inválidas.' });
+    res.status(401).json({ message: 'Credenciales inválidas.' });
   }
 
   try {

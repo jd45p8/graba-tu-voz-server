@@ -66,7 +66,7 @@ exports.create = async function (req, res) {
  */
 exports.remove = async function (req, res) {
   if (!req.params._id.match(/^[0-9a-fA-F]{24}$/)) {
-    return res.status(404).json({ message: 'Archivo no encontrado.' });
+    return res.status(404).json({ message: 'Grabación no encontrada.' });
   }
 
   const recording = await Recording.findOne({ email: req.user.email, _id: req.params._id });
