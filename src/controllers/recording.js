@@ -27,9 +27,17 @@ exports.create = async function (req, res) {
     recording.duration = metadata.format.duration;
 
     recording.fileID = `${md5(req.file.buffer)}.wav`;
-    const result = await Phrase.findOne({ text: recording.text });
-    if (!result) {
+    let phrase = await Phrase.findOne({ text: recording.text });
+    if (!phrase) {
       throw new Error('PHRASE_NOT_FOUND');
+    }
+
+    let countPhraseRecordings = await Recording.countDocuments({
+      email: recording.email,
+      text: recording.text
+    });
+    if (countPhraseRecordings >= process.env.MAX_RECORDINGS_PER_PHRASE) {
+      throw new Error('MAX_RECORDINGS_REACHED');
     }
 
     await recording.validate();
@@ -53,8 +61,10 @@ exports.create = async function (req, res) {
       res.status(422).json({ message: 'El archivo ya existe.' });
     } else if (error.name == 'ValidatorError' || error.name == 'ValidationError') {
       res.status(422).json({ message: 'Verifique la información ingresada.' });
-    } else if (error.message = 'PHRASE_NOT_FOUND') {
+    } else if (error.message == 'PHRASE_NOT_FOUND') {
       res.status(422).json({ message: 'Frase inexistente.' });
+    } else if (error.message == 'MAX_RECORDINGS_REACHED') {
+      res.status(422).json({ message: 'Suficientes grabaciones para esta frase.' })
     } else {
       res.status(500).json({ message: 'Algo ha salido mal.' });
     }

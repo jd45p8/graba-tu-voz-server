@@ -46,14 +46,16 @@ exports.remove = async function (req, res) {
 exports.list = async function (req, res) {
   try {
     const phrases = await Phrase.find({});
-    res.status(200).json(phrases.map( f => {
+    res.status(200).json(phrases.map(f => {
       return {
         _id: f._id,
-        text: f.text};
+        text: f.text,
+        maxRecordings: process.env.MAX_RECORDINGS_PER_PHRASE
+      };
     }));
   } catch (error) {
     console.log(error);
-    
+
     res.status(500).json({ message: 'Algo ha salido mal.' });
   }
 }

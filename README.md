@@ -17,7 +17,8 @@ Crear un archivo llamado *.env* en la raíz del proyecto con el siguiente conten
 *AWS_BUCKET_NAME*=nombre del AWS Bucket donde se almacenarán las pistas de audio\
 *AWS_ACCESS_KEY_ID*=id de acceso a AWS\
 *AWS_SECRET_ACCESS_KEY*=llave secreta de acceso a AWS\
-*AWS_REGION*=región de AWS por defecto
+*AWS_REGION*=región de AWS por defecto\
+*MAX_RECORDINGS_PER_PHRASE*=número máximo de grabaciones por frase que puede almacenar usuario
 
 # Producción
 `npm start`
