@@ -10,16 +10,17 @@ const phraseSchema = new Schema({
     minlength: 1,
     required: true,
     unique: true
-  },
-  createdDate: { type: Date, default: Date.now }
+  }
+}, {
+  timestamps: true
 });
 
 /**
  * Middleware para eliminar los espacios en blanco al principio y al final antes de validar.
  */
-phraseSchema.pre('validate', function(next) {
+phraseSchema.pre('validate', function (next) {
   const phrase = this;
-  if (phrase.isModified('text')){
+  if (phrase.isModified('text')) {
     phrase.text = phrase.text.trim();
   }
   next()

@@ -11,7 +11,7 @@ const recordingSchema = new Schema({
     type: String,
     required: true,
     validate: {
-      validator: function(email) {
+      validator: function (email) {
         return emailRegex.test(email);
       }
     }
@@ -31,6 +31,8 @@ const recordingSchema = new Schema({
     type: Number,
     required: true
   }
+}, {
+  timestamps: true
 });
 
 /**
