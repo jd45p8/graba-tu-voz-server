@@ -21,8 +21,36 @@ exports.create = async function (req, res) {
         message: 'El usuario ya se encuentra registrado.'
       });
     } else if (error.name == 'ValidatorError' || error.name == 'ValidationError') {
+      let field = Object.keys(error.errors)[0];
+      let fieldShownName = "";
+      switch (field) {
+        case "email":
+          fieldShownName = "correo";
+          break;
+        case "password":
+          fieldShownName = "contraseña";
+          break;
+        case "birthdate":
+          fieldShownName = "fecha de nacimiento (YYYY-MM-DD)";
+          break;
+        case "gender":
+          fieldShownName = "género";
+          break;
+        case "country":
+          fieldShownName = "país";
+          break;
+        case "state":
+          fieldShownName = "estado/departamento";
+          break;
+        case "province":
+          fieldShownName = "provincia/ciudad";
+          break;
+        default:
+          fieldShownName = field;
+          break;
+      }
       res.status(422).json({
-        message: 'Verifique la información ingresada.'
+        message: `Verifique el campo ${fieldShownName}.`
       });
     } else {
       res.status(500).json({

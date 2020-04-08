@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 
 const Schema = mongoose.Schema;
 const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const gendesList = ["Hombre", "Mujer", "Otro"];
+const minDate = new Date(new Date().setDate(new Date().getDate() - 365 * 90))
+const maxDate = new Date(new Date().setDate(new Date().getDate() - 365 * 3));
 
 /**
  * Esquema del usuario en la base de datos.
@@ -17,6 +20,24 @@ const userSchema = new Schema({
     }
   },
   password: { type: String, required: true, minlength: 8 },
+  birthdate: {
+    type: Date,
+    required: true,
+    validate: {
+      validator: function (birthdate) {
+        return birthdate > minDate && birthdate < maxDate;
+      }
+    }
+  },
+  gender: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (gender) {
+        return gendesList.includes(gender);
+      }
+    }
+  },
   contact: { type: Boolean, required: true },
   country: {
     type: String, required: function () {
