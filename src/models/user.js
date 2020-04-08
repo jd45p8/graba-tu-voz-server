@@ -25,7 +25,7 @@ const userSchema = new Schema({
     required: true,
     validate: {
       validator: function (birthdate) {
-        return birthdate > minDate && birthdate < maxDate;
+        return birthdate >= minDate && birthdate <= maxDate;
       }
     }
   },
