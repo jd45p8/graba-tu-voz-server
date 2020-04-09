@@ -22,7 +22,6 @@ const userSchema = new Schema({
   password: { type: String, required: true, minlength: 8 },
   birthdate: {
     type: Date,
-    required: true,
     validate: {
       validator: function (birthdate) {
         return birthdate >= minDate && birthdate <= maxDate;
