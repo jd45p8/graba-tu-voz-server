@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const Schema = mongoose.Schema;
-const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const emailRegex = /^[\w-\.]{6,30}@uninorte.edu.co$/;
 const gendesList = ["Hombre", "Mujer", "Otro"];
 const minDate = new Date(new Date().setDate(new Date().getDate() - 365 * 90))
 const maxDate = new Date(new Date().setDate(new Date().getDate() - 365 * 3));
