@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const Schema = mongoose.Schema;
 const emailRegex = /^[\w-\.]{6,30}@uninorte.edu.co$/;
+const pinRegex = /^\d{4}$/
 const gendesList = ["Hombre", "Mujer", "Otro"];
 const minDate = new Date(new Date().setDate(new Date().getDate() - 365 * 90))
 const maxDate = new Date(new Date().setDate(new Date().getDate() - 365 * 3));
@@ -56,6 +57,14 @@ const userSchema = new Schema({
     },
     minlength: 1
   },
+  pin: {
+    type: String,
+    validate: {
+      validator: function (pin) {
+        return pinRegex.test(pin)
+      }
+    }
+  },
   admin: {
     type: Boolean,
     default: false
@@ -99,6 +108,12 @@ userSchema.pre('save', async function (next) {
   const user = this;
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, parseInt(process.env.BCRYPT_SALT_ROUNDS || 10));
+  }
+
+  if (user.pin) {
+    if (user.isModified('pin')) {
+      user.pin = await bcrypt.hash(user.pin, parseInt(process.env.BCRYPT_SALT_ROUNDS || 10));
+    }
   }
 });
 

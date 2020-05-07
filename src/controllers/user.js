@@ -5,7 +5,19 @@ const User = require('../models/user');
  * Método para creación de usuario.
  */
 exports.create = async function (req, res) {
-  const user = new User(req.body);
+  if ('pin' in req.body) {
+    delete req.body['pin'];
+  }
+
+  if ('admin' in req.body) {
+    delete req.body['admin'];
+  }
+
+  if ('tokens' in req.body) {
+    delete req.body['tokens'];
+  }
+
+  let user = new User(req.body);
 
   try {
     await user.save();
@@ -45,6 +57,8 @@ exports.create = async function (req, res) {
         case "province":
           fieldShownName = "provincia/ciudad";
           break;
+        case "pin":
+          fieldShownName = "PIN";
         default:
           fieldShownName = field;
           break;
@@ -110,3 +124,70 @@ exports.logoutall = async function (req, res) {
     res.status(500).json({ message: 'Algo ha salido mal.' });
   }
 }
+
+/**
+ * Método para activar el pin
+ */
+exports.enablePin = async function (req, res) {
+  const user = req.user;
+  
+  if (!req.body.pin) {
+    return res.status(422).json({ message: 'El pin debe constar de 4 dígitos.' });
+  }
+
+  user.pin = req.body.pin;
+
+  try {
+    await user.save();
+    res.status(200).json({ message: 'Pin activado exitosamente.' });
+  } catch (error) {
+    console.log(error);
+    if (error.name == 'ValidatorError' || error.name == 'ValidationError') {
+      let field = Object.keys(error.errors)[0];
+      let message = 'Verifique el campo pin.';
+
+      if (field == "pin") {
+        message = 'Verifique la información ingresada';
+      }
+      res.status(422).json({
+        message: message
+      });
+    } else {
+      res.status(500).json({ message: 'Algo ha salido mal.' });
+    }
+  }
+}
+
+/**
+ * Método para desactivar el pin
+ */
+exports.disablePin = async function (req, res) {
+  const user = req.user;
+
+  if (!user.pin) {
+    return res.status(422).json({ message: 'El pin no está activado.' });
+  }
+
+  user.pin = undefined;
+  try {
+    await user.save();
+    res.status(200).json({ message: 'Pin desactivado exitosamente.' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Algo ha salido mal.' });
+  }
+}
+
+/**
+ * Método para obtener el estado del pin
+ */
+exports.pinStatus = async function (req, res) {
+  const user = req.user;
+  let status = 'enabled';
+  
+  if (user.pin == undefined) {
+    status = 'disabled'
+  }
+
+  res.status(200).json({ status: status});  
+} 

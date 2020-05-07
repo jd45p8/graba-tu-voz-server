@@ -108,11 +108,31 @@ Requiere enviar el Token en la cabecera.
 #### Respuesta
 Mesaje de confirmación (200).
 
+## /pin/enable
+### POST (Activar PIN)
+Requiere enviar el Token en la cabecera.
+#### Parámetros obligatorios
+*pin*: 4 dígitos numéricos sin espacios.
+#### Respuesta
+Mensaje de confirmación (200).
+
+## /pin/disable
+### POST (Desactivar PIN)
+Requiere enviar el Token en la cabecera.
+#### Respuesta
+Mensaje de confirmación (200).
+
+## /pin/status
+### GET (Activar PIN)
+Requiere enviar el Token en la cabecera.
+#### Respuesta
+Un parametro *status* en el cuerpo de la respuesta con el estado.
+
 # Códigos de respuesta de la API
 200 - Todo salió bien.\
 201 - Se crearon uno o más recursos en respuesta a la petición.\
 401 - No está autorizado para realizar esta petición.\
 403 - Credenciales de autenticación inválidas.\
 422 - El servidor entendió la petición, pero la información enviada no es correcta para el contexto dado.\
+404 - Recurso solicitado no ha sido encontrado.\
 500 - Errores de la API no permiten dar respuesta a la petición.\
-404 - Recurso solicitado no ha sido encontrado.
