@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 
 const Schema = mongoose.Schema;
 const emailRegex = /^[\w-\.]{6,30}@uninorte.edu.co$/;
-const pinRegex = /^\d{4}$/
 const gendesList = ["Hombre", "Mujer", "Otro"];
 const minDate = new Date(new Date().setDate(new Date().getDate() - 365 * 90))
 const maxDate = new Date(new Date().setDate(new Date().getDate() - 365 * 3));
@@ -59,11 +58,7 @@ const userSchema = new Schema({
   },
   pin: {
     type: String,
-    validate: {
-      validator: function (pin) {
-        return pinRegex.test(pin)
-      }
-    }
+    minlength: 4
   },
   admin: {
     type: Boolean,

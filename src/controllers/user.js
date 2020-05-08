@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const pinRegex = /^\d{4}$/
 
 
 /**
@@ -131,7 +132,7 @@ exports.logoutall = async function (req, res) {
 exports.enablePin = async function (req, res) {
   const user = req.user;
   
-  if (!req.body.pin) {
+  if (!req.body.pin || !pinRegex.test(req.body.pin)) {
     return res.status(422).json({ message: 'El pin debe constar de 4 dígitos.' });
   }
 
