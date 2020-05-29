@@ -10,6 +10,16 @@ const phraseSchema = new Schema({
     minlength: 1,
     required: true,
     unique: true
+  },
+  character: {
+    type: String,
+    unique:true,
+    validate: {
+      validator: function (character) {
+        return character.length == 1;
+      }, 
+      message: 'Debe contener un solo carácter.'
+    }
   }
 }, {
   timestamps: true

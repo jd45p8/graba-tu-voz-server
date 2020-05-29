@@ -128,6 +128,15 @@ userSchema.methods.generateAuthToken = async function () {
 }
 
 /**
+ * Método para verificar el PIN.
+ */
+userSchema.methods.comparePIN = async function (PIN) {
+  const user = this;
+  const PINMatch = await bcrypt.compare(PIN, user.pin);
+  return PINMatch;
+}
+
+/**
  * Método para encontrar un usuario usando sus credenciales.
  */
 userSchema.statics.findByCredentials = async function (email, password) {

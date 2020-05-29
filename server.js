@@ -5,6 +5,7 @@ const cors = require('cors');
 const userRouter = require('./src/routes/user');
 const recordingRouter = require('./src/routes/recording');
 const phraseRouter = require('./src/routes/phrase');
+const recognitionRouter = require('./src/routes/recognition');
 
 const port = process.env.PORT || 8080;
 const dbDir = `${process.env.DB_PREFIX}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}`;
@@ -30,6 +31,7 @@ mongoose.connect(dbDir, {
 app.use(userRouter);
 app.use(recordingRouter);
 app.use(phraseRouter);
+app.use(recognitionRouter);
 
 app.listen(port, () => {
   console.log(`Corriendo en puerto ${port}`);
