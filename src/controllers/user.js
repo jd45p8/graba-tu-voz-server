@@ -89,7 +89,7 @@ exports.login = async function (req, res) {
 
   try {
     const token = await user.generateAuthToken();
-    res.status(200).json({ token })
+    res.status(200).json({ token, admin: user.admin })
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Algo ha salido mal.' });
