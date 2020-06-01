@@ -10,7 +10,7 @@ const storage = multer.memoryStorage();
 const wavMimeTypes = ['audio/wav', 'audio/wave', 'audio/vnd.wave', 'audio/x-wav'];
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 2 * 1024 * 1024, files: 4 },
+  limits: { fileSize: 2 * 1024 * 1024, files: 1 },
   fileFilter: (req, file, callback) => {
     if (!wavMimeTypes.includes(file.mimetype)) {
       callback(new Error('WRONG_MIMETYPE'));
@@ -29,7 +29,7 @@ const upload = multer({
 router.route('/recognition/speaker')
   .post(userMiddleware.authenticate,
     userMiddleware.admin,
-    upload.array("files"),
+    upload.single("file"),
     recognitionController.speaker,
     multerErrorHandler.fileSize,
     multerErrorHandler.fileCount,

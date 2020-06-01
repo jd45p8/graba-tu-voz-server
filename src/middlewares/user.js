@@ -31,7 +31,11 @@ exports.authenticate = async function (req, res, next) {
 /**
  * Middleware para verificar si el usuario tiene permisos de administrador.
  */
-exports.admin = function (req, res, next) {
+exports.admin = function (err, req, res, next) {
+  if (err) {
+    next(err);
+  }
+  
   if (!req.user.admin) {
     return res.status(403).json({ message: 'No está autorizado para realizar esta solicitud.' });
   }

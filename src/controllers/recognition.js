@@ -8,27 +8,25 @@ const stream = require('stream');
  * Estima a que hablante pertenecen los audios recibidos.
  */
 exports.speaker = async function (req, res) {
-    files = req.files;
     let speaker_predictions = null;
     let phrases_prediction = null;
 
-    let form = new FormData()
-    files.map((file, index) => {
-        form.append(`${file.fieldname}${index}`, file.buffer, {
-            filename: `${file.fieldname}${index}`,
-            contentType: file.mimetype
-        })
+    let form = new FormData();
+    form.append(`${req.file.fieldname}`, req.file.buffer, {
+        filename: `${req.file.fieldname}`,
+        contentType: req.file.mimetype
     });
+    form.append('phraseSamples', req.body.phraseSamples);
 
     // Estimación del hablante
     try {
-        speaker_predictions = await axios({
+        response = await axios({
             method: 'POST',
             url: `${process.env.MODELS_SERVER_API}/speaker`,
             data: form,
             headers: form.getHeaders()
         });
-
+        speaker_predictions = response.data
     } catch(error) {
         console.log(error);
         return res.status(500).json({
@@ -37,46 +35,49 @@ exports.speaker = async function (req, res) {
     }
 
     form = new FormData()
-    files.map((file, index) => {
-        form.append(`${file.fieldname}${index}`, file.buffer, {
-            filename: `${file.fieldname}${index}`,
-            contentType: file.mimetype
-        })
+    form.append(`${req.file.fieldname}`, req.file.buffer, {
+        filename: `${req.file.fieldname}`,
+        contentType: req.file.mimetype
     });
+    form.append('phraseSamples', req.body.phraseSamples);
 
     // Estimación del habla
     try {
-        phrases_prediction = await axios({
+        response = await axios({
             method: 'POST',
             url: `${process.env.MODELS_SERVER_API}/character`,
             data: form,
             headers: form.getHeaders()
         });
+        phrases_prediction = response.data
     } catch(error) {
         console.log(error);
         return res.status(500).json({
             message: 'No se pudo estimar las frases.'
         });   
     }
+
+    console.log(speaker_predictions)
+    console.log(phrases_prediction)
     
     let texts = [];
     let probabilities = [];
-    files.map((file, index) => {
-        texts.push(phrases_prediction.data[`${file.fieldname}${index}`].label)
-        probabilities.push(phrases_prediction.data[`${file.fieldname}${index}`].probability)
+    phrases_prediction.map(({label, probability}) => {
+        texts.push(label)
+        probabilities.push(probability)
     });
 
     // Si se tiene algún valor ocn probabilidad menor al 70% no se puede determinar el PIN.
     if (probabilities.some(val => val < 0.70)) {
         return res.status(200).json({
-            speaker: speaker_predictions.data,
+            speakers: speaker_predictions,
             texts: texts.map((text, index) => {
                 return {
                     label: text,
                     probability: probabilities[index]
                 }
             }),
-            warning: "No pudo estimarse todos los caracteres del PIN con una probabiliad aceptable(70%)."
+            message: "No se pudo reconocer el PIN."
         })
     }
 
@@ -105,7 +106,7 @@ exports.speaker = async function (req, res) {
 
     // Se obtienen los usuarios que se indentificaron anteriormente cuya probabilidad es igual o superior al 70%
     emails = [];
-    speaker_predictions.data.forEach(element => {
+    speaker_predictions.forEach(element => {
         if (element.probability >= 0.7) {
             emails.push(element.label);
         }
@@ -122,7 +123,7 @@ exports.speaker = async function (req, res) {
         });
     }
 
-    // Se slecciona el usuario con mayor probabilidad que tenga el PIN indicado.
+    // Se selecciona el usuario con mayor probabilidad que tenga el PIN indicado.
     selected = null;
     for (email in emails) {
         for (user in users) {
@@ -133,13 +134,14 @@ exports.speaker = async function (req, res) {
     }
 
     res.status(200).json({
-        speaker: speaker_predictions.data,
+        speakers: speaker_predictions,
         texts: texts.map((text, index) => {
             return {
                 label: text,
-                probability: probabilities[index]
+                probability: probabilities[index],
             }
         }),
-        selectedSpeaker: selected
+        selectedSpeaker: selected,
+        message: "Finalizado"
     })
 }
