@@ -122,13 +122,18 @@ exports.speaker = async function (req, res) {
 
     // Se selecciona el usuario con mayor probabilidad que tenga el PIN indicado.
     selected = null;
-    emails.map(email => {
-        users.map(user => {
-            if (user.pin && user.email == email && user.comparePIN(pin)){
+    for (let email of emails) {
+        for (let user of users) {
+            if (user.pin && user.email == email && await user.comparePIN(pin)) {
                 selected = email;
+                break;
             }
-        });
-    });
+        }
+
+        if (selected != null) {
+            break;
+        }
+    }
 
     res.status(200).json({
         speakers: speaker_predictions,
