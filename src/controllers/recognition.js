@@ -56,9 +56,6 @@ exports.speaker = async function (req, res) {
             message: 'No se pudo estimar las frases.'
         });   
     }
-
-    console.log(speaker_predictions)
-    console.log(phrases_prediction)
     
     let texts = [];
     let probabilities = [];
@@ -106,7 +103,7 @@ exports.speaker = async function (req, res) {
 
     // Se obtienen los usuarios que se indentificaron anteriormente cuya probabilidad es igual o superior al 70%
     emails = [];
-    speaker_predictions.forEach(element => {
+    speaker_predictions.map(element => {
         if (element.probability >= 0.7) {
             emails.push(element.label);
         }
@@ -125,13 +122,13 @@ exports.speaker = async function (req, res) {
 
     // Se selecciona el usuario con mayor probabilidad que tenga el PIN indicado.
     selected = null;
-    for (email in emails) {
-        for (user in users) {
+    emails.map(email => {
+        users.map(user => {
             if (user.pin && user.email == email && user.comparePIN(pin)){
                 selected = email;
             }
-        }
-    }
+        });
+    });
 
     res.status(200).json({
         speakers: speaker_predictions,
