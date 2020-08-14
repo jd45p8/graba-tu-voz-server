@@ -1,5 +1,5 @@
 # graba-tu-voz-server
-Es el servidor para la aplicación graba tu voz.
+API para la aplicación graba tu voz. Que es una aplicación para reconocimiento del habla y del hablante por medio de su voz. Esta API provee acceso al almacenamiento de archivos en AWS S3 y a los datos de los usaurios y las grabaciones en la base de datos.
 
 # Desarrollo
 ## Intalación de dependencias
